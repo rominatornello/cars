@@ -8,7 +8,7 @@ public class Car extends Thread {
     private int id;
     private int x;
     private int y;
-    private static Position map[][];
+    public static Position map[][];
     private static int lastId=0;
 
     static {

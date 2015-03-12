@@ -1,45 +1,101 @@
 <html>
 
 <script src="scripts/pixi.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script>
+    getMap();
+    var renderer;
+    var stage;
+    var car;
+    var car2;
+    var car3;
+    var row = 0;
+    function load() {
+        stage = new PIXI.Stage(0xFFFFFF);
+        renderer = new PIXI.CanvasRenderer(1000, 1000);
+        document.body.appendChild(renderer.view);
+        requestAnimFrame(draw);
+
+        var carTexture = PIXI.Texture.fromImage("images/auto-1.png");
+        car = new PIXI.Sprite(carTexture);
+        car.width = 50;
+        car.height = 50;
+        stage.addChild(car);
+
+        var carTexture2 = PIXI.Texture.fromImage("images/auto-2.png");
+        car2 = new PIXI.Sprite(carTexture2);
+        car2.width = 50;
+        car2.height = 50;
+        car2.position.y = 100;
+        stage.addChild(car2);
+
+        var carTexture3 = PIXI.Texture.fromImage("images/auto-3.png");
+        car3 = new PIXI.Sprite(carTexture3);
+        car3.width = 50;
+        car3.height = 50;
+        car3.position.y = 200;
+        stage.addChild(car3);
+    }
+
+    window.onload = load;
+    function draw() {
+        requestAnimFrame(draw);
+        renderer.render(stage);
+    }
+
+    function getMap() {
+        $.get("/car", function (data) {
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].length; j++) {
+                    if (data[i][j].val != 0) {
+                        console.log(data[i][j].val);
+                        if (data[i][j].val == 1) {
+                            console.log("entra aqui****************")
+                            car.position.x += 50;
+                            posicionarRow(car, i);
+                        }
+
+                        if (data[i][j].val == 2) {
+                            car2.position.x += 50;
+                            posicionarRow(car2, i);
+                        }
+
+                        if (data[i][j].val == 3) {
+                            car3.position.x += 50;
+                            posicionarRow(car3, i);
+                        }
 
 
-	var renderer;
-	var stage;
-	function load() {
-	stage = new PIXI.Stage(0x66FF99);
-	renderer = new PIXI.CanvasRenderer(150,150);
-	document.body.appendChild(renderer.view);
-	requestAnimFrame(draw);
-	var carTexture = PIXI.Texture.fromImage('http://2.bp.blogspot.com/-CX3Vwis9tAo/Tks88ooyg1I/AAAAAAAAAKY/jBazqkM91lU/s1600/cars.jpg');
-	var car = new PIXI.Sprite(carTexture);
-	car.position.x = 10;
-	car.position.y = 10;
-	car.width=50;
-	car.height=50;
-	stage.addChild(car);
-}
+                    }
+                }
+            }
+            setTimeout("getMap()", 1000)
+        });
+    }
 
-window.onload = load;
+    function posicionarRow(car, i) {
+        if (i == 0)
+            car.position.y = 0;
+        if (i == 1)
+            car.position.y = 100;
+        if (i == 2)
+            car.position.y = 200;
 
-function draw() {
-	requestAnimFrame(draw);
-	renderer.render(stage);
+    }
 
-}
-
+    function startCar() {
+        $.get("/car/create/");
+    }
 
 </script>
+
 <body>
 
-	<h1>Welcome to Application Car</h1>
+<h1>Welcome to Application Car</h1>
 
-	<form action="/car/create/0" method="GET">
-		<input type="submit" value="create car"/>
+<button onclick="startCar()">Andar Autito</button>
+</br>
 
-	</form>
-
-	<button type="button" value="pix" onclick="draw();">Create Car Pix</button>
 
 </body>
 </html>
